@@ -1,0 +1,17 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Base application theme for dark mode -->
+    <style name="Base.Theme.BlueTreeAssignment" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Dark primary color for the app -->
+        <item name="colorPrimary">@color/colorPrimaryDark</item>
+        <!-- Dark primary color for the status bar -->
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <!-- Accent color for buttons and highlights -->
+        <item name="colorAccent">@color/colorAccent</item>
+        <!-- Window background color -->
+        <item name="android:windowBackground">@color/backgroundColor</item>
+
+    </style>
+
+
+</resources>
