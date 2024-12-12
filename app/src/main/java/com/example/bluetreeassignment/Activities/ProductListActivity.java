@@ -1,8 +1,10 @@
 package com.example.bluetreeassignment.Activities;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -29,9 +31,9 @@ import retrofit2.Response;
 public class ProductListActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private ProductAdapter productAdapter;
-   private List<Product> productList;
+    private List<Product> productList;
     private TextView user;
-    private ImageButton logout;
+    private ImageButton logout,cart;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,12 +45,20 @@ public class ProductListActivity extends AppCompatActivity {
         setupActionBar();
         setupWindowInsets();
         fetchProducts();
+        cart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(ProductListActivity.this,CartActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     // Initialize views
     private void initViews() {
         logout=findViewById(R.id.logout);
         user=findViewById(R.id.username);
+        cart=findViewById(R.id.cart);
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
@@ -81,7 +91,7 @@ public class ProductListActivity extends AppCompatActivity {
                 if (response.isSuccessful() && response.body() != null) {
                     productList = response.body().getProducts();
                     if (productList != null && !productList.isEmpty()) {
-                        productAdapter = new ProductAdapter(productList);
+                        productAdapter = new ProductAdapter(productList,getApplicationContext());
                         recyclerView.setAdapter(productAdapter);
                     } else {
                         Log.e("ProductListActivity", "Product list is empty");

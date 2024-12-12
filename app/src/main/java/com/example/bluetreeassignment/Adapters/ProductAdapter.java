@@ -1,6 +1,8 @@
 package com.example.bluetreeassignment.Adapters;
 
 
+import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 
+import com.example.bluetreeassignment.Activities.ProductDetailsActivity;
 import com.example.bluetreeassignment.Models.Product;
 import com.example.bluetreeassignment.R;
 
@@ -20,10 +23,12 @@ import java.util.List;
 
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductViewHolder> {
     private final List<Product> productList;
+    private Context context;
 
 
-    public ProductAdapter(List<Product> productList) {
+    public ProductAdapter(List<Product> productList,Context context) {
         this.productList = productList;
+        this.context=context;
 
     }
 
@@ -50,12 +55,13 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
                 .placeholder(R.drawable.placeholder)
                 .into(holder.productImage);
 
-        // Set click listener to navigate to the product details activity
-       /* holder.cardView.setOnClickListener(v -> {
+
+        holder.cardView.setOnClickListener(v -> {
             Intent intent = new Intent(context, ProductDetailsActivity.class);
-            intent.putExtra("PRODUCT_ID", product.getId());  // Passing the product ID
+            intent.putExtra("PRODUCT_ID", product.getId());
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);// Passing the product ID
             context.startActivity(intent);
-        });*/
+        });
     }
 
     @Override

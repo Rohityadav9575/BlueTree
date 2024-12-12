@@ -1,42 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.appcompat.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/toolbar"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#2D66C5">
+    android:background="#2D66C5"
+    android:contentDescription="@string/app_name">
 
-    <TextView
-        android:id="@+id/hello"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="20sp"
-        android:text="Hello"
-        android:textColor="@color/black"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="15dp"/>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
+        <!-- Hello text on the left -->
+        <TextView
+            android:id="@+id/hello"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:text="Hello"
+            android:textColor="@color/black"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="15dp"
+            android:gravity="start"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
+        <!-- Username text to the right of 'Hello' -->
+        <TextView
+            android:id="@+id/username"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:text="username"
+            android:textSize="20sp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="15dp"
+            android:gravity="start|center_vertical"
+            app:layout_constraintStart_toEndOf="@id/hello"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/username"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="5dp"
-        android:textColor="@color/black"
-        android:layout_toRightOf="@id/hello"
-        android:layout_marginTop="15dp"
-        android:text="username"
-        android:textSize="20sp" />
+        <!-- Cart button just before the logout button -->
+        <ImageButton
+            android:id="@+id/cart"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="#2D66C5"
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/baseline_shopping_cart_24"
+            app:layout_constraintEnd_toStartOf="@id/logout"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageButton
-        android:id="@+id/logout"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_alignTop="@id/hello"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="16dp"
-        android:background="#2D66C5"
-        android:contentDescription="@string/app_name"
-        android:src="@drawable/baseline_logout_24" />
+        <!-- Logout button aligned to the rightmost side -->
+        <ImageButton
+            android:id="@+id/logout"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="end"
+            android:background="#2D66C5"
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/baseline_logout_24"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-</RelativeLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.appcompat.widget.Toolbar>
