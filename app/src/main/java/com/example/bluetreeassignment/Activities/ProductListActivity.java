@@ -22,6 +22,8 @@ import com.example.bluetreeassignment.Models.Product;
 import com.example.bluetreeassignment.Network.ApiClient;
 import com.example.bluetreeassignment.Network.ApiService;
 import com.example.bluetreeassignment.R;
+import com.example.bluetreeassignment.utils.SQLiteHelper;
+
 import java.util.List;
 
 import retrofit2.Call;
@@ -33,13 +35,16 @@ public class ProductListActivity extends AppCompatActivity {
     private ProductAdapter productAdapter;
     private List<Product> productList;
     private TextView user;
-    private ImageButton logout,cart;
+    private ImageButton logoutButton,cart;
+    private SQLiteHelper sqLiteHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_product_list);
+        sqLiteHelper = SQLiteHelper.getInstance(this);
+
 
         initViews();
         setupActionBar();
@@ -48,24 +53,41 @@ public class ProductListActivity extends AppCompatActivity {
         cart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent=new Intent(ProductListActivity.this,CartActivity.class);
+                Intent intent = new Intent(ProductListActivity.this, CartActivity.class);
                 startActivity(intent);
             }
         });
+
+        logoutButton.setOnClickListener(v -> {
+
+           logout();
+        });
     }
+
+    private void logout() {
+        sqLiteHelper = new SQLiteHelper(this);
+        sqLiteHelper.clearCart();
+
+
+        Intent intent = new Intent(this, LandingActivity.class); // Replace with your landing page activity
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
+    }
+
 
     // Initialize views
     private void initViews() {
-        logout=findViewById(R.id.logout);
         user=findViewById(R.id.username);
         cart=findViewById(R.id.cart);
+        logoutButton = findViewById(R.id.logout);
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
-    // Set up the action bar with the user's name
+
     private void setupActionBar() {
-        SharedPreferences sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
         String username = sharedPreferences.getString("username", "Guest");
         user.setText(username);
 

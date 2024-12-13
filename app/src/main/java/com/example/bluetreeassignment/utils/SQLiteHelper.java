@@ -14,14 +14,25 @@ import java.util.List;
 public class SQLiteHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "cart.db";
-    private static final int DATABASE_VERSION = 2; // Increment version for schema change
+    private static final int DATABASE_VERSION = 9; // Increment version for schema change
 
     private static final String TABLE_CART = "cart";
     private static final String COLUMN_ID = "id";
     private static final String COLUMN_TITLE = "title";
     private static final String COLUMN_PRICE = "price";
     private static final String COLUMN_QUANTITY = "quantity";
-    private static final String COLUMN_THUMBNAIL = "thumbnail"; // Add thumbnail column
+    private static final String COLUMN_THUMBNAIL = "thumbnail";
+
+
+
+    private static SQLiteHelper instance;
+
+    public static synchronized SQLiteHelper getInstance(Context context) {
+        if (instance == null) {
+            instance = new SQLiteHelper(context.getApplicationContext());
+        }
+        return instance;
+    }
 
     public SQLiteHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -29,20 +40,24 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        // Updated schema to include thumbnail
-        String createTable = "CREATE TABLE " + TABLE_CART + " (" +
+
+        String createCartTable = "CREATE TABLE " + TABLE_CART + " (" +
                 COLUMN_ID + " INTEGER PRIMARY KEY, " +
                 COLUMN_TITLE + " TEXT, " +
                 COLUMN_PRICE + " REAL, " +
                 COLUMN_QUANTITY + " INTEGER, " +
-                COLUMN_THUMBNAIL + " TEXT)"; // Add thumbnail column
-        db.execSQL(createTable);
+                COLUMN_THUMBNAIL + " TEXT)";
+        db.execSQL(createCartTable);
+
+        // Create User Table
+
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // Handle schema update, if database version changes
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_CART);
+
         onCreate(db);
     }
 
@@ -59,7 +74,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         if (cursor != null && cursor.moveToFirst()) {
             // Update the quantity if the product exists
             int currentQuantity = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_QUANTITY));
-            quantity += currentQuantity; // Add new quantity to existing quantity
+            quantity += currentQuantity;
             ContentValues values = new ContentValues();
             values.put(COLUMN_QUANTITY, quantity);
 
@@ -75,7 +90,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
             values.put(COLUMN_TITLE, product.getTitle());
             values.put(COLUMN_PRICE, product.getPrice());
             values.put(COLUMN_QUANTITY, quantity);
-            values.put(COLUMN_THUMBNAIL, product.getThumbnail()); // Save thumbnail URL
+            values.put(COLUMN_THUMBNAIL, product.getThumbnail());
 
             long result = db.insert(TABLE_CART, null, values);
             db.close();
@@ -99,7 +114,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
                 product.setTitle(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_TITLE)));
                 product.setPrice(cursor.getDouble(cursor.getColumnIndexOrThrow(COLUMN_PRICE)));
                 product.setQuantity(cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_QUANTITY)));
-                product.setThumbnail(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_THUMBNAIL))); // Get thumbnail URL
+                product.setThumbnail(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_THUMBNAIL)));
                 cartProducts.add(product);
             } while (cursor.moveToNext());
             cursor.close();
@@ -147,4 +162,5 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         db.close();
         return totalAmount;
     }
+
 }

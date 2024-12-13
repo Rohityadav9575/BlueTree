@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     tools:context=".Activities.CartActivity">
     <include layout="@layout/toolbar"
-        android:id="@+id/layout_toolbar"/>
+        android:id="@+id/layout_toolbarcart"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/cartRecyclerView"
@@ -16,7 +16,7 @@
         app:layout_constraintBottom_toTopOf="@id/cartTotalLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/layout_toolbar" />
+        app:layout_constraintTop_toBottomOf="@+id/layout_toolbarcart" />
 
     <LinearLayout
         android:id="@+id/cartTotalLayout"

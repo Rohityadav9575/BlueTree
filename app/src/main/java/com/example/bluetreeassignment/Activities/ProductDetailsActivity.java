@@ -13,7 +13,6 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -31,23 +30,21 @@ import retrofit2.Response;
 
 
 public class ProductDetailsActivity extends AppCompatActivity {
-    private TextView title, description, price, category, stock, brand, rating;
+    private TextView title, description, price, category, stock, brand, rating,usernameTextView;
     private ImageView productImage;
     private Button addToCart;
     private int productId;
     private SQLiteHelper databaseHelper;
     private TextView user;
-    private ImageButton cart;
+    private ImageButton cart,logoutButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_product_details);
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        cart = findViewById(R.id.cart);  // Ensure you are getting the correct cart button from the toolbar
+        initViews();
 
         cart.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -56,20 +53,24 @@ public class ProductDetailsActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        title = findViewById(R.id.productTitle);
-        description = findViewById(R.id.productDescription);
-        price = findViewById(R.id.productPrice);
-        category = findViewById(R.id.productCategory);
-        stock = findViewById(R.id.productStock);
-        brand = findViewById(R.id.productBrand);
-        rating = findViewById(R.id.productRating);
-        productImage = findViewById(R.id.productImage);
-        addToCart = findViewById(R.id.addToCart);
-
-        databaseHelper = new SQLiteHelper(this);
 
 
-        // Retrieve the product ID from the Intent
+
+        logoutButton.setOnClickListener(v -> {
+           logout();
+        });
+
+
+
+        databaseHelper = SQLiteHelper.getInstance(this);
+
+        SharedPreferences sharedPreferences = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
+        String username = sharedPreferences.getString("username", "default_username");
+
+
+        usernameTextView = findViewById(R.id.username);
+        usernameTextView.setText(username);
+
         productId = getIntent().getIntExtra("PRODUCT_ID", -1);
 
         if (productId != -1) {
@@ -85,6 +86,35 @@ public class ProductDetailsActivity extends AppCompatActivity {
             return insets;
         });
     }
+
+    private void logout() {
+
+        SQLiteHelper sqLiteHelper = new SQLiteHelper(this);
+        sqLiteHelper.clearCart();
+
+
+        Intent intent = new Intent(this, LandingActivity.class); // Replace with your landing page activity
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
+    }
+
+    private void initViews() {
+        cart = findViewById(R.id.cart);
+        logoutButton = findViewById(R.id.logout);
+        title = findViewById(R.id.productTitle);
+        description = findViewById(R.id.productDescription);
+        price = findViewById(R.id.productPrice);
+        category = findViewById(R.id.productCategory);
+        stock = findViewById(R.id.productStock);
+        brand = findViewById(R.id.productBrand);
+        rating = findViewById(R.id.productRating);
+        productImage = findViewById(R.id.productImage);
+        addToCart = findViewById(R.id.addToCart);
+
+
+    }
+
     private void fetchProductDetails(int productId) {
         ApiService apiService = ApiClient.getClient().create(ApiService.class);
 
@@ -96,7 +126,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
                 if (response.isSuccessful() && response.body() != null) {
                     Product product = response.body();
                     updateUI(product);
-                    addToCart.setTag(product); // Store product object in button tag for reference
+                    addToCart.setTag(product);
                 } else {
                     Toast.makeText(ProductDetailsActivity.this, "Failed to load product details", Toast.LENGTH_SHORT).show();
                 }
@@ -110,7 +140,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
     }
 
     private void updateUI(Product product) {
-        // Populate the UI with product details
+
         title.setText(product.getTitle());
         description.setText(product.getDescription());
         price.setText("$" + product.getPrice());
@@ -119,7 +149,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
         brand.setText("Brand: " + product.getBrand());
         rating.setText("Rating: " + product.getRating());
 
-        // Load product image using Glide
+
         Glide.with(this)
                 .load(product.getImages().get(0))
                 .into(productImage);
@@ -129,8 +159,8 @@ public class ProductDetailsActivity extends AppCompatActivity {
         Product product = (Product) addToCart.getTag();
         if (product == null) return;
 
-        // Add the product to the SQLite database
-        boolean isAdded = databaseHelper.addProductToCart(product, 1); // Default quantity is 1
+
+        boolean isAdded = databaseHelper.addProductToCart(product, 1);
 
         if (isAdded) {
             Toast.makeText(this, product.getTitle() + " added to cart!", Toast.LENGTH_SHORT).show();
