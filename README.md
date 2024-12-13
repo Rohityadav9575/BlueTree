@@ -18,6 +18,13 @@ This is an Android application developed using Java that implements a simple pro
 - **Logout**: Clears all locally stored data and redirects back to the landing page to ask for the username again.
 - **Mobile Responsiveness**: All pages are designed to be mobile-friendly and neat.
 
+## Screenshots
+
+<img src="Screenshot/1.jpeg" alt="Landing Page" width="300" height="450"/><img src="Screenshot/2.jpeg" alt="Landing Page" width="300" height="450"/><img src="Screenshot/3.jpeg" alt="Landing Page" width="300" height="450"/><img src="Screenshot/4.jpeg" alt="Landing Page" width="300" height="450"/>
+
+
+
+
 ## API Used
 
 The application fetches product data from the following API:
